@@ -1,6 +1,10 @@
 from PIL import Image, ImageDraw,ImageFont
 import os
 import random
+import cv2
+import numpy as np
+from skimage.util import random_noise
+
 alphabet=[u"A",u"a",u"B",u"b",u"C",u"c",u"Ç",u"ç",u"D",u"d",u"E",u"e",u"Ə",u"ə",u"F",u"f",
           u"G",u"g",u"Ğ",u"ğ",u"H",u"h",u"X",u"x",u"I",u"ı",u"İ",u"i",u"J",u"j",u"K",u"k",u"Q",u"q",u"L",u"l",u"M",u"m",u"N",u"n",u"O",u"o",u"Ö",u"ö",u"P",u"p",u"R",u"r",u"S",u"s",u"Ş",u"ş",u"T",u"t",u"U",u"u",u"Ü",u"ü",u"V",u"v",u"Y",u"y",u"Z",u"z"]
 #alphabet=[u"a"]
@@ -24,15 +28,20 @@ W,H=(200,200)
 
 colourdict = {
     "white":[255,255,255],
-#     "grey":[225,225,225],
-#   "light_blue":[171,255,245],
-#    "red":[255,0,0],
-#   "green":[0,255,0],
-#     "blue":[0,0,255],
-#     "yellow":[255,255,0]
+  #"grey":[225,225,225],
+#"light_blue":[171,255,245],
+#"red":[255,0,0],
+#"green":[0,255,0],
+#"blue":[0,0,255],
+ #"yellow":[255,255,0]
 }
 
 tracked = 0
+
+def random_boolean():
+    true_or_false = random.getrandbits(1)
+    return bool(true_or_false)
+
 for letter in alphabet:
     for font_name in font_names:
         for color_name, rgb in colourdict.items():
@@ -47,15 +56,15 @@ for letter in alphabet:
             d=ImageDraw.Draw(new)
             w,h=d.textsize(letter,font=unicode_font)
             d.text(((W-w)/2,(H-h)/2),letter,font=unicode_font,fill=(0,0,0))
+            
             if tracked % 2 == 0:
                 #This next bit that is commented out is here as an option for the random squiggles.
                 #for times in range(0,random.randrange(0,5)):
                     #d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2], fill=128)
-                    
-                true_or_false = random.getrandbits(1)
-                order = bool(true_or_false)
+                
+                order = random_boolean()
                 if order==True:
-                    d.line([W/2,0,W/2,H], fill=128)
+                    d.line([W/2,0,W/2,H], fill=128) #This part is for drawing orderly grid lines with a cross.
                     d.line([W/4,0,W/4,H], fill=128)
                     d.line([3*W/4,0,3*W/4,H], fill=128)
                     d.line((0, H/2, W, H/2), fill=128)
@@ -65,5 +74,33 @@ for letter in alphabet:
                     d.line((0, 0, W, H), fill=128)
                 else:
                     d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
+                new.save(os.path.join("results", f"{letter}-{color_name}-{font_name}.png"))
+            else:
+                new.save(os.path.join("results", f"{letter}-{color_name}-{font_name}.png"))
+                path=os.path.join("results", f"{letter}-{color_name}-{font_name}.png")
+                new = cv2.imread(path)
+                noise=random_boolean()
+                if noise==True:
+                    modes=['s&p','poisson','gaussian','speckle']
+                    strengths={400,500}
+                    salt_pepper_ratios={0.8,0.2,0.5,0.3}
 
-            new.save(os.path.join("results", f"{letter}-{color_name}-{font_name}.png"))
+
+                    for i in range(0,len(modes)): # I am looping through all of the changeable characteristics of the noise.
+                        if modes[i]=='s&p':
+                            
+                            for ratio in salt_pepper_ratios:#These features are only available for the salt and pepper.
+                                strength=400
+                                amount1=random.uniform(0.2, 0.4)
+                                noise_img = random_noise(new, mode=modes[i],amount=amount1,salt_vs_pepper=ratio,seed=random.randint(100,200))
+                                noise_img = np.array(strength*noise_img, dtype = 'uint8')
+                                extra=f"--ratio_{ratio}--amount_{round(amount,2)}.jpg"
+                                Image.fromarray(noise_img).save(os.path.join("results", f"{letter}-{color_name}-{font_name}--{modes[i]}"+extra))#This is saving the files using pillow.
+                        else:
+                            extra=".jpg" #This is for the other noise types
+                            for strength in strengths:
+                                noise_img = random_noise(new, mode=modes[i])
+                                noise_img = np.array(strength*noise_img, dtype = 'uint8')
+                                Image.fromarray(noise_img).save(os.path.join("results", f"{letter}-{color_name}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
+                
+                
