@@ -1,9 +1,7 @@
 from PIL import Image, ImageDraw,ImageFont
-import os
-import random
 alphabet=[u"A",u"a",u"B",u"b",u"C",u"c",u"Ç",u"ç",u"D",u"d",u"E",u"e",u"Ə",u"ə",u"F",u"f",
           u"G",u"g",u"Ğ",u"ğ",u"H",u"h",u"X",u"x",u"I",u"ı",u"İ",u"i",u"J",u"j",u"K",u"k",u"Q",u"q",u"L",u"l",u"M",u"m",u"N",u"n",u"O",u"o",u"Ö",u"ö",u"P",u"p",u"R",u"r",u"S",u"s",u"Ş",u"ş",u"T",u"t",u"U",u"u",u"Ü",u"ü",u"V",u"v",u"Y",u"y",u"Z",u"z"]
-#alphabet=[u"a"]
+background_colours=[]
 font_names=["DejaVuSans.ttf","DejaVuSans-Oblique.ttf","dejavu-sans.condensed-bold-oblique.ttf","dejavu-sans.condensed-bold.ttf","UKIJTuzBold.ttf","TruetypewriterPolyglott-mELa.ttf","UKIJMoyQ.ttf","FreeSansBold.ttf","Abel-Bold.otf",
             "Abel-Regular.otf","Acidic.otf","Agency-Bold.ttf","Agency-Regular.ttf","Alboroto.otf","Aldo.ttf","Algerian.otf","Amydor.otf","Ambassadore-Bold-Italic.otf","Ambassadore-Bold.otf","Ambassadore-Italic.otf","Ambassadore-Regular.otf"
            ,"Antonio-Bold.otf","Antonio-Light.otf","Antonio-Regular.otf","Arch-Bold-Condensed.otf","Arch-Bold.otf","Arch-Condensed.otf","Arch-Light-Condensed.otf","Arch-Light.otf","Arch-Regular.otf",
@@ -19,47 +17,45 @@ font_names=["DejaVuSans.ttf","DejaVuSans-Oblique.ttf","dejavu-sans.condensed-bol
            "CirceRounded-Alt-Bold.otf","CirceRounded-Alt-ExtraBold.otf","CirceRounded-Bold.otf","CirceRounded-ExtraBold.otf","CirceRounded-ExtraLight.otf","CirceRounded-Light.otf","CirceRounded-Regular.otf","CirceRounded-Thin.otf","Co-Headline-Regular.otf",
            "Co-text.otf","Coal-Hand-Luke.ttf","ClearSans-Bold.otf","ClearSans-BoldItalic.otf","ClearSans-Italic.otf","ClearSans-Italic.otf","ClearSans-Light.otf","Cooper.otf","Copperplate.otf","Cormac-Black.otf","Cormac-ExtraLight.otf","CQ-Mono.otf","ClearSans-MediumItalic.otf",
            "ClearSans-Regular.otf","ClearSans-Thin.otf","Cocomat-Light.otf","Colo-Pro-Black.otf","Colo-Pro-Inline.otf","Comfortaa-Bold.otf","Comfortaa-Light.otf","Comfortaa-Regular.otf"]#153 font types
+#print(len(font_names))
 
+#alphabet=["a","b","c"]
+#alphabet=[u"Ə"]
 W,H=(200,200)
 
 colourdict = {
     "white":[255,255,255],
-#     "grey":[225,225,225],
-#   "light_blue":[171,255,245],
-#    "red":[255,0,0],
-#   "green":[0,255,0],
-#     "blue":[0,0,255],
-#     "yellow":[255,255,0]
+    "grey":[225,225,225],
+  "light_blue":[171,255,245],
+   "red":[255,0,0],
+  "green":[0,255,0],
+    "blue":[0,0,255],
+    "yellow":[255,255,0]
 }
+#This dictionary is how I am dealing with the background colours 
 
-tracked = 0
-for letter in alphabet:
-    for font_name in font_names:
-        for color_name, rgb in colourdict.items():
-            tracked += 1
+#And this is a dictionary that I am using for now for testing if the font types work:
+colourdict = {
+    "white":[255,255,255]}
+import os
+
+for i in range(0,len(alphabet)): #Here I am creating a loop in which I take all of the letters of the alphabet and use them in pillow
+    for my_font in range(0,len(font_names)):
+        for colour_name, the_colour in colourdict.items():
+            #print(the_colour)
+            #text=input("enter text here... ")
+            text=alphabet[i]
             
-            #These are the specifications of the image.
-            new=Image.new('RGB',(200,200),color=(rgb[0],rgb[1],rgb[2]))
-
-            #This is here because pillow's default fonts only work for ascii characters. This is why we must use a unicode font.
-            unicode_font = ImageFont.truetype(os.path.join("fonts",font_name), 40) 
+            
+            new=Image.new('RGB',(200,200),color=(the_colour[0],the_colour[1],the_colour[2]))#These are the specifications of the image.
+ 
+            unicode_font = ImageFont.truetype(os.path.join("fonts",font_names[my_font]), 40) #This is here because pillow's default fonts only work for ascii characters. This is why we must use a unicode font.
 
             d=ImageDraw.Draw(new)
-            w,h=d.textsize(letter,font=unicode_font)
-            d.text(((W-w)/2,(H-h)/2),letter,font=unicode_font,fill=(0,0,0))
-            if tracked % 2 == 0:
-                #This next bit that is commented out is here as an option for the random squiggles.
-                #for times in range(0,random.randrange(0,5)):
-                    #d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2], fill=128)
-                    
-                true_or_false = random.getrandbits(1)
-                order = bool(true_or_false)
-                if order==True:
-                    d.line([W/2,0,W/2,H], fill=128)
-                    d.line((0, H/2, W, H/2), fill=128)
-                    d.line((0, H, W, 0), fill=128)
-                    d.line((0, 0, W, H), fill=128)
-                else:
-                    d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
+            w,h=d.textsize(text,font=unicode_font)
+            d.text(((W-w)/2,(H-h)/2),text,font=unicode_font,fill=(0,0,0))#putting the text on the screen.
 
-            new.save(os.path.join("results", f"{letter}-{color_name}-{font_name}.png"))
+
+
+            new.save(os.path.join("results", alphabet[i]+font_names[my_font]+colour_name+".png"))#saving the files
+            #new.show()
