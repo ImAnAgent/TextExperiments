@@ -74,10 +74,10 @@ for letter in alphabet:
                     d.line((0, 0, W, H), fill=128)
                 else:
                     d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
-                new.save(os.path.join("results", f"{letter}-{color_name}-{font_name}.png"))
+                new.save(os.path.join("results", f" {letter}-{color_name}-{font_name}.png"))
             else:
-                new.save(os.path.join("results", f"{letter}-{color_name}-{font_name}.png"))
-                path=os.path.join("results", f"{letter}-{color_name}-{font_name}.png")
+                new.save(os.path.join("results", f" {letter}-{color_name}-{font_name}.png"))
+                path=os.path.join("results", f" {letter}-{color_name}-{font_name}.png")
                 new = cv2.imread(path)
                 noise=random_boolean()
                 if noise==True:
@@ -95,12 +95,12 @@ for letter in alphabet:
                                 noise_img = random_noise(new, mode=modes[i],amount=amount1,salt_vs_pepper=ratio,seed=random.randint(100,200))
                                 noise_img = np.array(strength*noise_img, dtype = 'uint8')
                                 extra=f"--ratio_{ratio}--amount_{round(amount,2)}.jpg" #because in the name there is now a randomly generated variable, I recommend deleting the results folder and remaking it each time the program is run.
-                                Image.fromarray(noise_img).save(os.path.join("results", f"{letter}-{color_name}-{font_name}--{modes[i]}"+extra))#This is saving the files using pillow.
+                                Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}"+extra))#This is saving the files using pillow.
                         else:
                             extra=".jpg" #This is for the other noise types
                             for strength in strengths:
                                 noise_img = random_noise(new, mode=modes[i])
                                 noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
-                                Image.fromarray(noise_img).save(os.path.join("results", f"{letter}-{color_name}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
+                                Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
                 
                 
