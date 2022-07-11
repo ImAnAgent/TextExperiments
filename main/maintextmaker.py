@@ -28,14 +28,14 @@ W,H=(200,200)
 
 colourdict = {
     "white":[255,255,255],
-  #"grey":[225,225,225],
-#"light_blue":[171,255,245],
-#"red":[255,0,0],
-#"green":[0,255,0],
-#"blue":[0,0,255],
- #"yellow":[255,255,0]
+  "grey":[225,225,225],
+"light_blue":[171,255,245],
+"red":[255,0,0],
+"green":[0,255,0],
+"blue":[0,0,255],
+ "yellow":[255,255,0]
 }
-
+#Remember to comment out the colours that you do not need!
 tracked = 0
 
 def random_boolean():
@@ -94,13 +94,13 @@ for letter in alphabet:
                                 amount1=random.uniform(0.2, 0.4)
                                 noise_img = random_noise(new, mode=modes[i],amount=amount1,salt_vs_pepper=ratio,seed=random.randint(100,200))
                                 noise_img = np.array(strength*noise_img, dtype = 'uint8')
-                                extra=f"--ratio_{ratio}--amount_{round(amount,2)}.jpg"
+                                extra=f"--ratio_{ratio}--amount_{round(amount,2)}.jpg" #because in the name there is now a randomly generated variable, I recommend deleting the results folder and remaking it each time the program is run.
                                 Image.fromarray(noise_img).save(os.path.join("results", f"{letter}-{color_name}-{font_name}--{modes[i]}"+extra))#This is saving the files using pillow.
                         else:
                             extra=".jpg" #This is for the other noise types
                             for strength in strengths:
                                 noise_img = random_noise(new, mode=modes[i])
-                                noise_img = np.array(strength*noise_img, dtype = 'uint8')
+                                noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
                                 Image.fromarray(noise_img).save(os.path.join("results", f"{letter}-{color_name}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
                 
                 
