@@ -64,7 +64,7 @@ for letter in alphabet:
                 
                 order = random_boolean()
                 if order==True:
-                    d.line([W/2,0,W/2,H], fill=128) #This part is for drawing orderly grid lines with a cross.
+                    d.line([W/2,0,W/2,H], fill=128) #This part is for drawing orderly grid lines with a cross. Maybe I could make some sort of loop to generate it, but I think that might end up being a bit confusing.
                     d.line([W/4,0,W/4,H], fill=128)
                     d.line([3*W/4,0,3*W/4,H], fill=128)
                     d.line((0, H/2, W, H/2), fill=128)
