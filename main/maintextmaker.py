@@ -76,8 +76,8 @@ for letter in alphabet:
                     d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
                 new.save(os.path.join("results", f" {letter}-{color_name}-{font_name}.png"))
             else:
-                new.save(os.path.join("results", f" {letter}-{color_name}-{font_name}.png"))
                 path=os.path.join("results", f" {letter}-{color_name}-{font_name}.png")
+                new.save(path)
                 new = cv2.imread(path)
                 noise=random_boolean()
                 if noise==True:
