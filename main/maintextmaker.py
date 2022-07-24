@@ -94,7 +94,7 @@ for letter in alphabet:
                                 amount1=random.uniform(0.2, 0.4)
                                 noise_img = random_noise(new, mode=modes[i],amount=amount1,salt_vs_pepper=ratio,seed=random.randint(100,200))
                                 noise_img = np.array(strength*noise_img, dtype = 'uint8')
-                                extra=f"--ratio_{ratio}--amount_{round(amount,2)}.jpg" #because in the name there is now a randomly generated variable, I recommend deleting the results folder and remaking it each time the program is run.
+                                extra=f"--ratio_{ratio}--amount_{round(amount1,2)}.jpg" #because in the name there is now a randomly generated variable, I recommend deleting the results folder and remaking it each time the program is run.
                                 Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}"+extra))#This is saving the files using pillow.
                         else:
                             extra=".jpg" #This is for the other noise types
