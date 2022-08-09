@@ -1,1 +1,1 @@
-# TextExperiments
+# AzeriAlphabetOCR
