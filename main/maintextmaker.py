@@ -112,5 +112,3 @@ for letter in alphabet:
                             image_saved+=1
                             
 print(image_saved)
-
-
