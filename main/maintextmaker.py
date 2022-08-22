@@ -7,7 +7,7 @@ from skimage.util import random_noise
 
 alphabet=[u"A",u"a",u"B",u"b",u"C",u"c",u"Ç",u"ç",u"D",u"d",u"E",u"e",u"Ə",u"ə",u"F",u"f",
           u"G",u"g",u"Ğ",u"ğ",u"H",u"h",u"X",u"x",u"I",u"ı",u"İ",u"i",u"J",u"j",u"K",u"k",u"Q",u"q",u"L",u"l",u"M",u"m",u"N",u"n",u"O",u"o",u"Ö",u"ö",u"P",u"p",u"R",u"r",u"S",u"s",u"Ş",u"ş",u"T",u"t",u"U",u"u",u"Ü",u"ü",u"V",u"v",u"Y",u"y",u"Z",u"z"]
-#alphabet=[u"ç"]
+
 font_names=["DejaVuSans.ttf","DejaVuSans-Oblique.ttf","dejavu-sans.condensed-bold-oblique.ttf","dejavu-sans.condensed-bold.ttf","UKIJTuzBold.ttf","TruetypewriterPolyglott-mELa.ttf","UKIJMoyQ.ttf","FreeSansBold.ttf","Abel-Bold.otf",
             "Abel-Regular.otf","Acidic.otf","Agency-Bold.ttf","Agency-Regular.ttf","Alboroto.otf","Aldo.ttf","Algerian.otf","Amydor.otf","Ambassadore-Bold-Italic.otf","Ambassadore-Bold.otf","Ambassadore-Italic.otf","Ambassadore-Regular.otf"
            ,"Antonio-Bold.otf","Antonio-Light.otf","Antonio-Regular.otf","Arch-Bold-Condensed.otf","Arch-Bold.otf","Arch-Condensed.otf","Arch-Light-Condensed.otf","Arch-Light.otf","Arch-Regular.otf",
@@ -35,8 +35,11 @@ colourdict = {
 "blue":[0,0,255],
  "yellow":[255,255,0]
 }
-#colourdict={"light_blue":[171,255,245]}
-#Remember to comment out the colours that you do not need!
+
+# test settings
+# colourdict={"light_blue":[171,255,245]}
+# font_names = ["DejaVuSans.ttf"]
+
 tracked = 0
 image_saved=0
 def random_boolean():
@@ -46,6 +49,7 @@ for letter in alphabet:
     count=0
     for font_name in font_names:
         for color_name, rgb in colourdict.items():
+            
             tracked += 1
             
             #These are the specifications of the image.
@@ -57,15 +61,28 @@ for letter in alphabet:
             d=ImageDraw.Draw(new)
             w,h=d.textsize(letter,font=unicode_font)
             d.text(((W-w)/2,(H-h)/2),letter,font=unicode_font,fill=(0,0,0))
-            new.save(os.path.join("results", f" {letter}-{color_name}-{font_name}.png"))
+            if letter.isupper():
+                path = f"results/{letter}-capital/{letter}-{color_name}-{font_name}.png"
+            else:
+                path = f"results/{letter}/{letter}-{color_name}-{font_name}.png"
+
+            try:
+                new.save(path)
+            except:
+                if letter.isupper():
+                    os.makedirs(f"results/{letter}-capital")
+                else:
+                    os.makedirs(f"results/{letter}")
+                new.save(path)
             image_saved+=1
+            
             if tracked % 2 == 0:
                 #This next bit that is commented out is here as an option for the random squiggles.
                 #for times in range(0,random.randrange(0,5)):
                     #d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2], fill=128)
                 
                 order = random_boolean()
-                if order==True:
+                if order:
                     d.line([W/2,0,W/2,H], fill=128) #This part is for drawing orderly grid lines with a cross. Maybe I could make some sort of loop to generate it, but I think that might end up being a bit confusing.
                     d.line([W/4,0,W/4,H], fill=128)
                     d.line([3*W/4,0,3*W/4,H], fill=128)
@@ -77,40 +94,25 @@ for letter in alphabet:
                 else:
                     d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
                 count+=1
-                new.save(os.path.join("results", f" {letter}-{color_name}-{font_name}.png"))
-                image_saved+=1
-            else:
-                path=os.path.join("results", f" {letter}-{color_name}-{font_name}.png")
                 new.save(path)
                 image_saved+=1
-                new = cv2.imread(path)
-                #print(new)
-                
+            else:
+                new.save(path)
+                image_saved+=1
+                new = Image.open(path)
+                # convert to ndarray
+                img_array = np.array(new)
                
-                modes=['s&p','poisson','gaussian','speckle']
+                modes=['poisson','gaussian','speckle']
                 strengths={400,500}
-                salt_pepper_ratios={0.8,0.2,0.5,0.3}
-
 
                 for i in range(0,len(modes)): # I am looping through all of the changeable characteristics of the noise.
-                    if modes[i]=='s&p':
+                    #This is for the other noise types
+                    for strength in strengths:
+                        noise_img = random_noise(img_array, mode=modes[i])
+                        noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
+                        extra=f"--{modes[i]}--noise_multiplier_{strength}.jpg"
+                        Image.fromarray(noise_img).save(path+extra)
+                        image_saved+=1
 
-                        for ratio in salt_pepper_ratios:#These features are only available for the salt and pepper.
-                            strength=400
-                            amount1=random.uniform(0.2, 0.4)
-                            noise_img = random_noise(new, mode=modes[i],amount=amount1,salt_vs_pepper=ratio,seed=random.randint(100,200))
-                            noise_img = np.array(strength*noise_img, dtype = 'uint8')
-                            extra=f"--ratio_{ratio}--amount_{round(amount1,2)}.jpg" #because in the name there is now a randomly generated variable, I recommend deleting the results folder and remaking it each time the program is run.
-                            Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}"+extra))#This is saving the files using pillow.
-                            image_saved+=1
-                    else:
-                        extra=".jpg" #This is for the other noise types
-                        for strength in strengths:
-                            noise_img = random_noise(new, mode=modes[i])
-                            noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
-                            Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
-                            image_saved+=1
-                            
 print(image_saved)
-
-
