@@ -107,22 +107,20 @@ for letter in alphabet:
                 strengths={400,500}
 
                 for i in range(0,len(modes)): # I am looping through all of the changeable characteristics of the noise.
-                    if modes[i]=='s&p':
 
-                        for ratio in salt_pepper_ratios:#These features are only available for the salt and pepper.
-                            strength=400
-                            amount1=random.uniform(0.2, 0.4)
-                            noise_img = random_noise(new, mode=modes[i],amount=amount1,salt_vs_pepper=ratio,seed=random.randint(100,200))
-                            noise_img = np.array(strength*noise_img, dtype = 'uint8')
-                            extra=f"--ratio_{ratio}--amount_{round(amount1,2)}.jpg" #because in the name there is now a randomly generated variable, I recommend deleting the results folder and remaking it each time the program is run.
-                            Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}"+extra))#This is saving the files using pillow.
-                            image_saved+=1
-                    else:
-                        extra=".jpg" #This is for the other noise types
-                        for strength in strengths:
-                            noise_img = random_noise(new, mode=modes[i])
-                            noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
-                            Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
-                            image_saved+=1
-                            
+                    #This is for the other noise types
+                    for strength in strengths:
+                        noise_img = random_noise(img_array, mode=modes[i])
+                        noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
+                        extra=f"--{modes[i]}--noise_multiplier_{strength}.jpg"
+                        Image.fromarray(noise_img).save(path+extra)
+                        image_saved+=1
+
+                    extra=".jpg" #This is for the other noise types
+                    for strength in strengths:
+                        noise_img = random_noise(new, mode=modes[i])
+                        noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
+                        Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
+                        image_saved+=1
+                        
 print(image_saved)
