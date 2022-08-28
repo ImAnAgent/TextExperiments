@@ -1,7 +1,6 @@
 from PIL import Image, ImageDraw,ImageFont
 import os
 import random
-import cv2
 import numpy as np
 from skimage.util import random_noise
 
