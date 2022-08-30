@@ -45,7 +45,6 @@ def random_boolean():
     return bool(random.getrandbits(1))
 
 for letter in alphabet:
-    count=0
     for font_name in font_names:
 
         tracked += 1
@@ -91,7 +90,6 @@ for letter in alphabet:
                 d.line((0, 0, W, H), fill=128)
             else:
                 d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
-            count+=1
             new.save(path)
             image_saved+=1
         else:
@@ -113,12 +111,3 @@ for letter in alphabet:
                     extra=f"--{modes[i]}--noise_multiplier_{strength}.jpg"
                     Image.fromarray(noise_img).save(path+extra)
                     image_saved+=1
-
-                extra=".jpg" #This is for the other noise types
-                for strength in strengths:
-                    noise_img = random_noise(new, mode=modes[i])
-                    noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
-                    Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
-                    image_saved+=1
-                        
-print(image_saved)
