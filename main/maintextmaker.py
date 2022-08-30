@@ -25,15 +25,15 @@ font_names=["DejaVuSans.ttf","DejaVuSans-Oblique.ttf","dejavu-sans.condensed-bol
 
 W,H=(200,200)
 
-colourdict = {
-  "white":[255,255,255],
-  "grey":[225,225,225],
-"light_blue":[171,255,245],
-"red":[255,0,0],
-"green":[0,255,0],
-"blue":[0,0,255],
- "yellow":[255,255,0]
-}
+# colourdict = {
+#   "white":[255,255,255],
+#   "grey":[225,225,225],
+# "light_blue":[171,255,245],
+# "red":[255,0,0],
+# "green":[0,255,0],
+# "blue":[0,0,255],
+#  "yellow":[255,255,0]
+# }
 
 # test settings
 # colourdict={"light_blue":[171,255,245]}
@@ -47,79 +47,78 @@ def random_boolean():
 for letter in alphabet:
     count=0
     for font_name in font_names:
-        for color_name, rgb in colourdict.items():
-            
-            tracked += 1
-            
-            #These are the specifications of the image.
-            new=Image.new('RGB',(200,200),color=(rgb[0],rgb[1],rgb[2]))
 
-            #This is here because pillow's default fonts only work for ascii characters. This is why we must use a unicode font.
-            unicode_font = ImageFont.truetype(os.path.join("fonts",font_name), 40) 
+        tracked += 1
+        
+        #These are the specifications of the image.
+        new=Image.new('RGB',(200,200),(255,255,255))
 
-            d=ImageDraw.Draw(new)
-            w,h=d.textsize(letter,font=unicode_font)
-            d.text(((W-w)/2,(H-h)/2),letter,font=unicode_font,fill=(0,0,0))
+        #This is here because pillow's default fonts only work for ascii characters. This is why we must use a unicode font.
+        unicode_font = ImageFont.truetype(os.path.join("fonts",font_name), 40) 
+
+        d=ImageDraw.Draw(new)
+        w,h=d.textsize(letter,font=unicode_font)
+        d.text(((W-w)/2,(H-h)/2),letter,font=unicode_font,fill=(0,0,0))
+        if letter.isupper():
+            path = f"results/{letter}-capital/{letter}-{font_name}.png"
+        else:
+            path = f"results/{letter}/{letter}-{font_name}.png"
+
+        try:
+            new.save(path)
+        except:
             if letter.isupper():
-                path = f"results/{letter}-capital/{letter}-{color_name}-{font_name}.png"
+                os.makedirs(f"results/{letter}-capital")
             else:
-                path = f"results/{letter}/{letter}-{color_name}-{font_name}.png"
-
-            try:
-                new.save(path)
-            except:
-                if letter.isupper():
-                    os.makedirs(f"results/{letter}-capital")
-                else:
-                    os.makedirs(f"results/{letter}")
-                new.save(path)
-            image_saved+=1
+                os.makedirs(f"results/{letter}")
+            new.save(path)
+        image_saved+=1
+        
+        if tracked % 2 == 0:
+            #This next bit that is commented out is here as an option for the random squiggles.
+            #for times in range(0,random.randrange(0,5)):
+                #d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2], fill=128)
             
-            if tracked % 2 == 0:
-                #This next bit that is commented out is here as an option for the random squiggles.
-                #for times in range(0,random.randrange(0,5)):
-                    #d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2], fill=128)
-                
-                order = random_boolean()
-                if order:
-                    d.line([W/2,0,W/2,H], fill=128) #This part is for drawing orderly grid lines with a cross. Maybe I could make some sort of loop to generate it, but I think that might end up being a bit confusing.
-                    d.line([W/4,0,W/4,H], fill=128)
-                    d.line([3*W/4,0,3*W/4,H], fill=128)
-                    d.line((0, H/2, W, H/2), fill=128)
-                    d.line((0, H/4, W, H/4), fill=128)
-                    d.line((0, 3*H/4, W, 3*H/4), fill=128)
-                    d.line((0, H, W, 0), fill=128)
-                    d.line((0, 0, W, H), fill=128)
-                else:
-                    d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
-                count+=1
-                new.save(path)
-                image_saved+=1
+            order = random_boolean()
+            if order:
+                d.line([W/2,0,W/2,H], fill=128) #This part is for drawing orderly grid lines with a cross. Maybe I could make some sort of loop to generate it, but I think that might end up being a bit confusing.
+                d.line([W/4,0,W/4,H], fill=128)
+                d.line([3*W/4,0,3*W/4,H], fill=128)
+                d.line((0, H/2, W, H/2), fill=128)
+                d.line((0, H/4, W, H/4), fill=128)
+                d.line((0, 3*H/4, W, 3*H/4), fill=128)
+                d.line((0, H, W, 0), fill=128)
+                d.line((0, 0, W, H), fill=128)
             else:
-                new.save(path)
-                image_saved+=1
-                new = Image.open(path)
-                # convert to ndarray
-                img_array = np.array(new)
-               
-                modes=['poisson','gaussian','speckle']
-                strengths={400,500}
+                d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
+            count+=1
+            new.save(path)
+            image_saved+=1
+        else:
+            new.save(path)
+            image_saved+=1
+            new = Image.open(path)
+            # convert to ndarray
+            img_array = np.array(new)
+            
+            modes=['poisson','gaussian','speckle']
+            strengths={400,500}
 
-                for i in range(0,len(modes)): # I am looping through all of the changeable characteristics of the noise.
+            for i in range(0,len(modes)): # I am looping through all of the changeable characteristics of the noise.
 
-                    #This is for the other noise types
-                    for strength in strengths:
-                        noise_img = random_noise(img_array, mode=modes[i])
-                        noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
-                        extra=f"--{modes[i]}--noise_multiplier_{strength}.jpg"
-                        Image.fromarray(noise_img).save(path+extra)
-                        image_saved+=1
+                #This is for the other noise types
+                for strength in strengths:
+                    noise_img = random_noise(img_array, mode=modes[i])
+                    noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
+                    extra=f"--{modes[i]}--noise_multiplier_{strength}.jpg"
+                    Image.fromarray(noise_img).save(path+extra)
+                    image_saved+=1
 
-                    extra=".jpg" #This is for the other noise types
-                    for strength in strengths:
-                        noise_img = random_noise(new, mode=modes[i])
-                        noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
-                        Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{color_name}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
-                        image_saved+=1
+                extra=".jpg" #This is for the other noise types
+                for strength in strengths:
+                    noise_img = random_noise(new, mode=modes[i])
+                    noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
+                    Image.fromarray(noise_img).save(os.path.join("results", f" {letter}-{font_name}--{modes[i]}--noise_multiplier_{strength}"+extra))
+                    image_saved+=1
                         
 print(image_saved)
