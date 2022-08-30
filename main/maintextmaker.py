@@ -36,7 +36,7 @@ W,H=(200,200)
 # }
 
 # test settings
-# colourdict={"light_blue":[171,255,245]}
+alphabet = [u'a']
 # font_names = ["DejaVuSans.ttf"]
 
 tracked = 0
@@ -60,17 +60,17 @@ for letter in alphabet:
         w,h=d.textsize(letter,font=unicode_font)
         d.text(((W-w)/2,(H-h)/2),letter,font=unicode_font,fill=(0,0,0))
         if letter.isupper():
-            path = f"results/{letter}-capital/{letter}-{font_name}.png"
+            path = f"smallresults/{letter}-capital/{letter}-{font_name}.png"
         else:
-            path = f"results/{letter}/{letter}-{font_name}.png"
+            path = f"smallresults/{letter}/{letter}-{font_name}.png"
 
         try:
             new.save(path)
         except:
             if letter.isupper():
-                os.makedirs(f"results/{letter}-capital")
+                os.makedirs(f"smallresults/{letter}-capital")
             else:
-                os.makedirs(f"results/{letter}")
+                os.makedirs(f"smallresults/{letter}")
             new.save(path)
         image_saved+=1
         
