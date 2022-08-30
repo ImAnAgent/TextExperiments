@@ -36,7 +36,7 @@ W,H=(200,200)
 # }
 
 # test settings
-alphabet = [u'a']
+alphabet = [u'b']
 # font_names = ["DejaVuSans.ttf"]
 
 tracked = 0
