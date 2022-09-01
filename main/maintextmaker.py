@@ -35,8 +35,9 @@ colourdict = {
 # "red":[255,0,0],
 }
 
+alphabet = ['a', 'b', 'c']
+
 tracked = 0
-image_saved=0
 
 for letter in alphabet:
     for font_name in font_names:
@@ -63,8 +64,7 @@ for letter in alphabet:
             else:
                 os.makedirs(f"smallresults/{letter}")
             new.save(path)
-        image_saved+=1
-        
+
         if tracked % 3 == 0:
             
             if tracked % 6 == 0:
@@ -79,10 +79,8 @@ for letter in alphabet:
             else:
                 d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128)
             new.save(path)
-            image_saved+=1
         else:
             new.save(path)
-            image_saved+=1
             new = Image.open(path)
             # convert to ndarray
             img_array = np.array(new)
@@ -96,4 +94,3 @@ for letter in alphabet:
                     noise_img = np.array(strength*noise_img, dtype = 'uint8')
                     extra=f"--{modes[i]}--noise_multiplier_{strength}.jpg"
                     Image.fromarray(noise_img).save(path+extra)
-                    image_saved+=1
