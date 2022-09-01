@@ -25,34 +25,26 @@ font_names=["DejaVuSans.ttf","DejaVuSans-Oblique.ttf","dejavu-sans.condensed-bol
 
 W,H=(200,200)
 
-# colourdict = {
-#   "white":[255,255,255],
-#   "grey":[225,225,225],
-# "light_blue":[171,255,245],
-# "red":[255,0,0],
-# "green":[0,255,0],
-# "blue":[0,0,255],
+colourdict = {
+  "white":[255,255,255],
+  "grey":[225,225,225],
+"light_blue":[171,255,245],
+"green":[0,255,0],
+"blue":[0,0,255],
 #  "yellow":[255,255,0]
-# }
-
-# test settings
-alphabet = [u'b']
-# font_names = ["DejaVuSans.ttf"]
+# "red":[255,0,0],
+}
 
 tracked = 0
 image_saved=0
-def random_boolean():
-    return bool(random.getrandbits(1))
 
 for letter in alphabet:
     for font_name in font_names:
 
         tracked += 1
         
-        #These are the specifications of the image.
         new=Image.new('RGB',(200,200),(255,255,255))
 
-        #This is here because pillow's default fonts only work for ascii characters. This is why we must use a unicode font.
         unicode_font = ImageFont.truetype(os.path.join("fonts",font_name), 40) 
 
         d=ImageDraw.Draw(new)
@@ -73,14 +65,10 @@ for letter in alphabet:
             new.save(path)
         image_saved+=1
         
-        if tracked % 2 == 0:
-            #This next bit that is commented out is here as an option for the random squiggles.
-            #for times in range(0,random.randrange(0,5)):
-                #d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2], fill=128)
+        if tracked % 3 == 0:
             
-            order = random_boolean()
-            if order:
-                d.line([W/2,0,W/2,H], fill=128) #This part is for drawing orderly grid lines with a cross. Maybe I could make some sort of loop to generate it, but I think that might end up being a bit confusing.
+            if tracked % 6 == 0:
+                d.line([W/2,0,W/2,H], fill=128)
                 d.line([W/4,0,W/4,H], fill=128)
                 d.line([3*W/4,0,3*W/4,H], fill=128)
                 d.line((0, H/2, W, H/2), fill=128)
@@ -89,7 +77,7 @@ for letter in alphabet:
                 d.line((0, H, W, 0), fill=128)
                 d.line((0, 0, W, H), fill=128)
             else:
-                d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128) # I can make random squiggles like this and make sure that they pass through the origin
+                d.line([random.randrange(0, W),random.randrange(0, H),W/2,H/2,W,H,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H),W/2,H/2,random.randrange(0, W),random.randrange(0, H),random.randrange(0, W),random.randrange(0, H)], fill=128)
             new.save(path)
             image_saved+=1
         else:
@@ -102,12 +90,10 @@ for letter in alphabet:
             modes=['poisson','gaussian','speckle']
             strengths={400,500}
 
-            for i in range(0,len(modes)): # I am looping through all of the changeable characteristics of the noise.
-
-                #This is for the other noise types
+            for i in range(0,len(modes)):
                 for strength in strengths:
                     noise_img = random_noise(img_array, mode=modes[i])
-                    noise_img = np.array(strength*noise_img, dtype = 'uint8')#I know this line is repeating, but I do not know whether it is worth making a separate function for it.
+                    noise_img = np.array(strength*noise_img, dtype = 'uint8')
                     extra=f"--{modes[i]}--noise_multiplier_{strength}.jpg"
                     Image.fromarray(noise_img).save(path+extra)
                     image_saved+=1
