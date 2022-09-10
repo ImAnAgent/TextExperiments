@@ -25,16 +25,6 @@ font_names=["DejaVuSans.ttf","DejaVuSans-Oblique.ttf","dejavu-sans.condensed-bol
 
 W,H=(200,200)
 
-colourdict = {
-  "white":[255,255,255],
-  "grey":[225,225,225],
-"light_blue":[171,255,245],
-"green":[0,255,0],
-"blue":[0,0,255],
- "yellow":[255,255,0],
-"red":[255,0,0],
-}
-
 tracked = 0
 
 for letter in alphabet:
@@ -50,17 +40,17 @@ for letter in alphabet:
         w,h=d.textsize(letter,font=unicode_font)
         d.text(((W-w)/2,(H-h)/2),letter,font=unicode_font,fill=(0,0,0))
         if letter.isupper():
-            path = f"smallresults/{letter}-capital/{letter}-{font_name}.png"
+            path = f"results/{letter}-capital/{letter}-{font_name}.png"
         else:
-            path = f"smallresults/{letter}/{letter}-{font_name}.png"
+            path = f"results/{letter}/{letter}-{font_name}.png"
 
         try:
             new.save(path)
         except:
             if letter.isupper():
-                os.makedirs(f"smallresults/{letter}-capital")
+                os.makedirs(f"results/{letter}-capital")
             else:
-                os.makedirs(f"smallresults/{letter}")
+                os.makedirs(f"results/{letter}")
             new.save(path)
 
         if tracked % 3 == 0:
