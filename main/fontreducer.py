@@ -14,7 +14,7 @@ font_names=["DejaVuSans.ttf","DejaVuSans-Oblique.ttf","dejavu-sans.condensed-bol
            "Co-text.otf","Coal-Hand-Luke.ttf","ClearSans-Bold.otf","ClearSans-BoldItalic.otf","ClearSans-Italic.otf","ClearSans-Italic.otf","ClearSans-Light.otf","Cooper.otf","Copperplate.otf","Cormac-Black.otf","Cormac-ExtraLight.otf","CQ-Mono.otf","ClearSans-MediumItalic.otf",
            "ClearSans-Regular.otf","ClearSans-Thin.otf","Cocomat-Light.otf","Colo-Pro-Black.otf","Colo-Pro-Inline.otf","Comfortaa-Bold.otf","Comfortaa-Light.otf","Comfortaa-Regular.otf"]
 
-# Loop through font_names and remove bold, italic, and condensed fonts, keeping only the main one
+# Loop through font_names and remove light, italic, and condensed fonts, keeping only the main one
 for font_name in font_names:
     font = font_name.lower()
     if "light" in font or "thin" in font or "italic" in font or "condensed" in font:
